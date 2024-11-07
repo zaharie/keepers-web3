@@ -71,17 +71,12 @@ const ExchangePage = () => {
 
   const handleDepositUSDC = async () => {
     if (!liquidityPoolContract || !usdcContract || !account) return;
-
     const parsedAmount = parseUnits(amount, 6);
-    console.log(parsedAmount, "AAA");
-    console.log(LIQUIDITY_POOL_ADDRESS, "BBB");
-
     await usdcContract.approve(LIQUIDITY_POOL_ADDRESS, parsedAmount);
-    console.log("CCCC");
     const tx = await liquidityPoolContract.depositUSDC(parsedAmount);
     await tx.wait();
 
-    updateBalances();
+    await updateBalances();
 
     const newTransaction = {
       date: new Date().toISOString(),
