@@ -12,6 +12,8 @@ const BLTM_TOKEN_ADDRESS = "0xBd9B0231e597E5348b10c2e9Cc466A25C2acdD13";
 
 const ExchangePage = () => {
   const { account, provider } = useWallet();
+
+  // Especificar que os estados podem ser `ethers.Contract` ou `null`
   const [liquidityPoolContract, setLiquidityPoolContract] =
     useState<ethers.Contract | null>(null);
   const [usdcContract, setUsdcContract] = useState<ethers.Contract | null>(
@@ -19,8 +21,8 @@ const ExchangePage = () => {
   );
   const [bltmTokenContract, setBltmTokenContract] =
     useState<ethers.Contract | null>(null);
-  const [amount, setAmount] = useState<string>("");
 
+  const [amount, setAmount] = useState<string>("");
   const [usdcBalance, setUsdcBalance] = useState<string>("0");
   const [bltmBalance, setBltmBalance] = useState<string>("0");
   const [exchangeRate, setExchangeRate] = useState<string>("1");
@@ -32,6 +34,7 @@ const ExchangePage = () => {
     const setupContracts = async () => {
       if (provider && account) {
         const signer = await provider.getSigner();
+
         const liquidityPool = new ethers.Contract(
           LIQUIDITY_POOL_ADDRESS,
           LiquidityPoolData.abi,
@@ -50,8 +53,6 @@ const ExchangePage = () => {
 
         const rate = await liquidityPool.exchangeRate();
         setExchangeRate(formatUnits(rate, 6));
-
-        loadSavedTransactions();
       }
     };
 
@@ -64,28 +65,6 @@ const ExchangePage = () => {
     }
   }, [usdcContract, bltmTokenContract, account]);
 
-  // Load transactions from localStorage for display purposes only
-  const loadSavedTransactions = () => {
-    if (account) {
-      const savedTransactions = localStorage.getItem(`transactions_${account}`);
-      if (savedTransactions) {
-        setTransactions(JSON.parse(savedTransactions));
-      }
-    }
-  };
-
-  // Save transactions to localStorage without affecting the transaction logic
-  const saveTransactionsToLocalStorage = (
-    newTransactions: Array<{ date: string; action: string; amount: string }>
-  ) => {
-    if (account) {
-      localStorage.setItem(
-        `transactions_${account}`,
-        JSON.stringify(newTransactions)
-      );
-    }
-  };
-
   const updateBalances = async () => {
     if (usdcContract && bltmTokenContract && account) {
       const usdcBal = await usdcContract.balanceOf(account);
@@ -97,12 +76,10 @@ const ExchangePage = () => {
 
   const handleDepositUSDC = async () => {
     if (!liquidityPoolContract || !usdcContract || !account) return;
-
     const parsedAmount = parseUnits(amount, 6);
     await usdcContract.approve(LIQUIDITY_POOL_ADDRESS, parsedAmount);
     const tx = await liquidityPoolContract.depositUSDC(parsedAmount);
     await tx.wait();
-
     updateBalances();
 
     const newTransaction = {
@@ -110,9 +87,7 @@ const ExchangePage = () => {
       action: "Deposit USDC",
       amount,
     };
-    const updatedTransactions = [...transactions, newTransaction];
-    setTransactions(updatedTransactions);
-    saveTransactionsToLocalStorage(updatedTransactions);
+    setTransactions((prev) => [...prev, newTransaction]);
   };
 
   const handleWithdrawBLTM = async () => {
@@ -121,7 +96,6 @@ const ExchangePage = () => {
     const parsedAmount = parseUnits(amount, 6);
     const tx = await liquidityPoolContract.redeemBLTM(parsedAmount);
     await tx.wait();
-
     updateBalances();
 
     const newTransaction = {
@@ -129,20 +103,16 @@ const ExchangePage = () => {
       action: "Withdraw USDC",
       amount,
     };
-    const updatedTransactions = [...transactions, newTransaction];
-    setTransactions(updatedTransactions);
-    saveTransactionsToLocalStorage(updatedTransactions);
+    setTransactions((prev) => [...prev, newTransaction]);
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) =>
     setAmount(e.target.value);
 
   const sortTransactions = (key: keyof (typeof transactions)[0]) => {
-    const sortedTransactions = [...transactions].sort((a, b) =>
-      a[key] > b[key] ? 1 : -1
+    setTransactions((prev) =>
+      [...prev].sort((a, b) => (a[key] > b[key] ? 1 : -1))
     );
-    setTransactions(sortedTransactions);
-    saveTransactionsToLocalStorage(sortedTransactions);
   };
 
   return (
