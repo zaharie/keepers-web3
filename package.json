@@ -5,7 +5,7 @@
   "scripts": {
     "test": "jest",
     "dev": "next dev",
-    "build": "next build",
+    "build": "npm install @testing-library/react --legacy-peer-deps && next build",
     "start": "next start",
     "lint": "next lint"
   },
