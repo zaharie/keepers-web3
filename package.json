@@ -9,18 +9,37 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@openzeppelin/contracts": "^5.1.0",
+    "next": "15.0.2",
     "react": "19.0.0-rc-02c0e824-20241028",
-    "react-dom": "19.0.0-rc-02c0e824-20241028",
-    "next": "15.0.2"
+    "react-dom": "19.0.0-rc-02c0e824-20241028"
   },
   "devDependencies": {
-    "typescript": "^5",
-    "@types/node": "^20",
+    "@nomicfoundation/hardhat-chai-matchers": "^2.0.8",
+    "@nomicfoundation/hardhat-ethers": "^3.0.8",
+    "@nomicfoundation/hardhat-network-helpers": "^1.0.12",
+    "@nomicfoundation/hardhat-toolbox": "^3.0.0",
+    "@nomicfoundation/hardhat-verify": "^1.1.1",
+    "@nomiclabs/hardhat-etherscan": "^3.1.8",
+    "@typechain/ethers-v6": "^0.4.3",
+    "@typechain/hardhat": "^8.0.3",
+    "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
-    "postcss": "^8",
-    "tailwindcss": "^3.4.1",
-    "eslint": "^8",
-    "eslint-config-next": "15.0.2"
+    "@types/sinon-chai": "^4.0.0",
+    "autoprefixer": "^10.4.20",
+    "chai": "^4.5.0",
+    "dotenv": "^16.4.5",
+    "eslint": "^9",
+    "eslint-config-next": "15.0.2",
+    "ethers": "^6.13.4",
+    "hardhat": "^2.22.15",
+    "hardhat-gas-reporter": "^1.0.10",
+    "postcss": "^8.4.47",
+    "solidity-coverage": "^0.8.13",
+    "tailwindcss": "^3.4.14",
+    "ts-node": "^10.9.2",
+    "typechain": "^8.3.2",
+    "typescript": "^5"
   }
 }
