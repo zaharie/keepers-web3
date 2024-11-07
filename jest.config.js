@@ -1,13 +1,12 @@
+// jest.config.js
 module.exports = {
-  testEnvironment: "node",
+  preset: "ts-jest",
+  testEnvironment: "jsdom",
+  setupFilesAfterEnv: ["<rootDir>/setupTests.ts"], // ou setupTests.js
   transform: {
-    "^.+\\.tsx?$": "ts-jest",
+    "^.+\\.(ts|tsx)$": "ts-jest",
   },
-  moduleFileExtensions: ["ts", "js"],
-  testMatch: ["**/?(*.)+(spec|test).[tj]s?(x)"],
-  globals: {
-    "ts-jest": {
-      diagnostics: false,
-    },
+  moduleNameMapper: {
+    "\\.(css|scss)$": "identity-obj-proxy",
   },
 };
