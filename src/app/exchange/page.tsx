@@ -56,7 +56,9 @@ const ExchangePage = () => {
     setupContracts();
   }, [provider, account]);
 
-
+  useEffect(() => {
+    updateBalances();
+  }, []);
 
   const updateBalances = async () => {
     if (usdcContract && bltmTokenContract && account) {
