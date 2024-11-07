@@ -50,12 +50,41 @@ const ExchangePage = () => {
 
         const rate = await liquidityPool.exchangeRate();
         setExchangeRate(formatUnits(rate, 6));
+
+        loadSavedTransactions();
       }
     };
-    updateBalances();
+
     setupContracts();
   }, [provider, account]);
 
+  useEffect(() => {
+    if (usdcContract && bltmTokenContract && account) {
+      updateBalances();
+    }
+  }, [usdcContract, bltmTokenContract, account]);
+
+  // Load transactions from localStorage for display purposes only
+  const loadSavedTransactions = () => {
+    if (account) {
+      const savedTransactions = localStorage.getItem(`transactions_${account}`);
+      if (savedTransactions) {
+        setTransactions(JSON.parse(savedTransactions));
+      }
+    }
+  };
+
+  // Save transactions to localStorage without affecting the transaction logic
+  const saveTransactionsToLocalStorage = (
+    newTransactions: Array<{ date: string; action: string; amount: string }>
+  ) => {
+    if (account) {
+      localStorage.setItem(
+        `transactions_${account}`,
+        JSON.stringify(newTransactions)
+      );
+    }
+  };
 
   const updateBalances = async () => {
     if (usdcContract && bltmTokenContract && account) {
@@ -68,22 +97,22 @@ const ExchangePage = () => {
 
   const handleDepositUSDC = async () => {
     if (!liquidityPoolContract || !usdcContract || !account) return;
+
     const parsedAmount = parseUnits(amount, 6);
     await usdcContract.approve(LIQUIDITY_POOL_ADDRESS, parsedAmount);
     const tx = await liquidityPoolContract.depositUSDC(parsedAmount);
     await tx.wait();
 
+    updateBalances();
 
     const newTransaction = {
       date: new Date().toISOString(),
       action: "Deposit USDC",
       amount,
     };
-    setTransactions((prevTransactions) => [
-      ...prevTransactions,
-      newTransaction,
-    ]);
-    updateBalances();
+    const updatedTransactions = [...transactions, newTransaction];
+    setTransactions(updatedTransactions);
+    saveTransactionsToLocalStorage(updatedTransactions);
   };
 
   const handleWithdrawBLTM = async () => {
@@ -93,18 +122,16 @@ const ExchangePage = () => {
     const tx = await liquidityPoolContract.redeemBLTM(parsedAmount);
     await tx.wait();
 
+    updateBalances();
 
     const newTransaction = {
       date: new Date().toISOString(),
       action: "Withdraw USDC",
       amount,
     };
-    setTransactions((prevTransactions) => [
-      ...prevTransactions,
-      newTransaction,
-    ]);
-    updateBalances();
-
+    const updatedTransactions = [...transactions, newTransaction];
+    setTransactions(updatedTransactions);
+    saveTransactionsToLocalStorage(updatedTransactions);
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) =>
@@ -115,6 +142,7 @@ const ExchangePage = () => {
       a[key] > b[key] ? 1 : -1
     );
     setTransactions(sortedTransactions);
+    saveTransactionsToLocalStorage(sortedTransactions);
   };
 
   return (
