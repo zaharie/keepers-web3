@@ -52,13 +52,10 @@ const ExchangePage = () => {
         setExchangeRate(formatUnits(rate, 6));
       }
     };
-
+    updateBalances();
     setupContracts();
   }, [provider, account]);
 
-  useEffect(() => {
-    updateBalances();
-  }, []);
 
   const updateBalances = async () => {
     if (usdcContract && bltmTokenContract && account) {
