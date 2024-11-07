@@ -76,7 +76,6 @@ const ExchangePage = () => {
     const tx = await liquidityPoolContract.depositUSDC(parsedAmount);
     await tx.wait();
 
-    await updateBalances();
 
     const newTransaction = {
       date: new Date().toISOString(),
@@ -87,6 +86,7 @@ const ExchangePage = () => {
       ...prevTransactions,
       newTransaction,
     ]);
+    updateBalances();
   };
 
   const handleWithdrawBLTM = async () => {
