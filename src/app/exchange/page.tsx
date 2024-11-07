@@ -96,7 +96,6 @@ const ExchangePage = () => {
     const tx = await liquidityPoolContract.redeemBLTM(parsedAmount);
     await tx.wait();
 
-    updateBalances();
 
     const newTransaction = {
       date: new Date().toISOString(),
@@ -107,6 +106,8 @@ const ExchangePage = () => {
       ...prevTransactions,
       newTransaction,
     ]);
+    updateBalances();
+
   };
 
   const handleAmountChange = (e: React.ChangeEvent<HTMLInputElement>) =>
