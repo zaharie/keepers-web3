@@ -23,6 +23,7 @@
     "@nomiclabs/hardhat-etherscan": "^3.1.8",
     "@typechain/ethers-v6": "^0.4.3",
     "@typechain/hardhat": "^8.0.3",
+    "@types/jest": "^29.5.14",
     "@types/node": "^22",
     "@types/react": "^18",
     "@types/react-dom": "^18",
