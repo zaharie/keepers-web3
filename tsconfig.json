@@ -14,14 +14,7 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "incremental": true,
-    "types": [
-      "node",
-      "jest",
-      "chai",
-      "mocha",
-      "hardhat",
-      "@testing-library/jest-dom"
-    ],
+    "types": ["node", "jest", "hardhat", "@testing-library/jest-dom"],
     "plugins": [
       {
         "name": "next"
